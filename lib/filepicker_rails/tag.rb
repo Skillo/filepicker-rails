@@ -8,10 +8,9 @@ module FilepickerRails
                                        :store_location, :store_access,
                                        :store_container, :multiple]
 
-    FILEPICKER_OPTIONS_TO_CAMELIZE = [:max_size, :max_files, :open_to]
+    FILEPICKER_OPTIONS_TO_CAMELIZE = [:max_size, :max_files, :open_to, :language]
 
     private
-
       attr_reader :input_options, :type
 
       def define_input_options(options)
@@ -39,7 +38,7 @@ module FilepickerRails
       end
 
       def secure_filepicker
-        Policy.apply([:pick, :store], ['data-fp-policy', 'data-fp-signature'])
+        Policy.apply(call: [:pick, :store], keys: ['data-fp-policy', 'data-fp-signature'])
       end
   end
 end

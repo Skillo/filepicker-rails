@@ -37,6 +37,7 @@ module FilepickerRails
     # - `:open_to` - Open the picker to the given service. Ex: `COMPUTER`.
     # - `:class` - Add a class to the input.
     # - `:value` - Define the value of the input
+    # - `:language` - Open the picker to the given language. Ex: `fr`.
     #
     # #### Examples
     #
@@ -163,6 +164,10 @@ module FilepickerRails
     #
     # - `:cache` - Specifies if the image should be cached or not.
     #
+    # - `:compress` - You can take advantage of Filepicker's image compression which utilizes JPEGtran and OptiPNG.
+    #                 The value for this parameter is boolean. If you want to compress your image then the parameter
+    #                 is compress:true. Compression is off/false by default.
+    #
     # #### Examples
     #
     #      filepicker_image_url @user.filepicker_url, w: 160, h: 160, fit: 'clip'
@@ -183,9 +188,9 @@ module FilepickerRails
         options[:data]['fp-url'] = url
         options[:data]['fp-apikey'] = ::Rails.application.config.filepicker_rails.api_key
         options[:data]['fp-mimetype'] = mimetype
-        options[:data]['fp-option-container'] = container if container
-        options[:data]['fp-option-services'] = Array(services).join(",") if services
-        options[:data]['fp-option-defaultSaveasName'] = save_as if save_as
+        options[:data]['fp-container'] = container if container
+        options[:data]['fp-services'] = Array(services).join(",") if services
+        options[:data]['fp-suggestedFilename'] = save_as if save_as
         block.call
       end
   end

@@ -72,24 +72,24 @@ RSpec.describe FilepickerRails::ApplicationHelper do
 
       describe "container" do
 
-        it "have the data-fp-option-container attribute" do
-          attribute = %{data-fp-option-container="modal"}
+        it "have the data-fp-container attribute" do
+          attribute = %{data-fp-container="modal"}
           expect(filepicker_save_button('save', '/foo', 'image/jpg', container: 'modal')).to include(attribute)
         end
       end
 
       describe "services" do
 
-        it "have the data-fp-option-services attribute" do
-          attribute = %{data-fp-option-services="COMPUTER, FACEBOOK"}
+        it "have the data-fp-services attribute" do
+          attribute = %{data-fp-services="COMPUTER, FACEBOOK"}
           expect(filepicker_save_button('save', '/foo', 'image/jpg', services: 'COMPUTER, FACEBOOK')).to include(attribute)
         end
       end
 
-      describe "save_as_name" do
+      describe "suggestedFilename" do
 
-        it "have the data-fp-option-defaultSaveasName attribute" do
-          attribute = %{data-fp-option-defaultSaveasName="myfile"}
+        it "have the data-fp-suggestedFilename attribute" do
+          attribute = %{data-fp-suggestedFilename="myfile"}
           expect(filepicker_save_button('save', '/foo', 'image/jpg', save_as_name: 'myfile')).to include(attribute)
         end
       end
@@ -109,21 +109,21 @@ RSpec.describe FilepickerRails::ApplicationHelper do
       describe "container" do
 
         it "have the correct link" do
-          expect(filepicker_save_link('save', '/foo', 'image/jpg', container: 'modal')).to eq(build_link('fp-option-container' => 'modal'))
+          expect(filepicker_save_link('save', '/foo', 'image/jpg', container: 'modal')).to eq(build_link('fp-container' => 'modal'))
         end
       end
 
       describe "services" do
 
         it "have the correct link" do
-          expect(filepicker_save_link('save', '/foo', 'image/jpg', services: 'COMPUTER, FACEBOOK')).to eq(build_link('fp-option-services' => 'COMPUTER, FACEBOOK'))
+          expect(filepicker_save_link('save', '/foo', 'image/jpg', services: 'COMPUTER, FACEBOOK')).to eq(build_link('fp-services' => 'COMPUTER, FACEBOOK'))
         end
       end
 
-      describe "save_as_name" do
+      describe "suggestedFilename" do
 
         it "have the correct link" do
-          expect(filepicker_save_link('save', '/foo', 'image/jpg', save_as_name: 'myfile')).to eq(build_link('fp-option-defaultSaveasName' => 'myfile'))
+          expect(filepicker_save_link('save', '/foo', 'image/jpg', save_as_name: 'myfile')).to eq(build_link('fp-suggestedFilename' => 'myfile'))
         end
       end
     end
@@ -258,6 +258,18 @@ RSpec.describe FilepickerRails::ApplicationHelper do
         end
       end
 
+      describe 'compress' do
+
+        it "have correct url with 'compress' only" do
+          expect(filepicker_image_url("foo", compress: true)).to eq('foo?compress=true')
+        end
+
+        it "have correct url with 'compress' and convert option" do
+          url = 'foo/convert?align=faces&compress=true'
+          expect(filepicker_image_url("foo", compress: true, align: 'faces')).to eq(url)
+        end
+      end
+
       describe "when convert options is already in the url" do
 
         it "merges the options into the query params" do
@@ -301,16 +313,22 @@ RSpec.describe FilepickerRails::ApplicationHelper do
       end
 
       it 'have policy and signature' do
-        url = 'foo?policy=eyJleHBpcnkiOjEzNDgwNjAxNjcsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXX0%3D' \
-              '&signature=4562a7e728aa0e53d82c20a97e4f01103dd127724edce631c3f4ada70922eecd'
+        url = 'foo?policy=eyJleHBpcnkiOjEzNDgwNjAxNjcsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiZm9vIn0%3D' \
+              '&signature=bccb3bdfc0cb1dfc7cff1bafebd659bb5a8f1a1a3a93e9d80a32b004cd4ab939'
         expect(filepicker_image_url('foo')).to eq(url)
+      end
+
+      it 'have different policy and signature with a different handle' do
+        url = 'bar?policy=eyJleHBpcnkiOjEzNDgwNjAxNjcsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiYmFyIn0%3D' \
+                  '&signature=687ed74d2d113b77069c4aac836cb4d1b947cff8e7dba920869b47e4e03ff6b6'
+        expect(filepicker_image_url('bar')).to eq(url)
       end
 
       it 'have policy and signature when have some convert option' do
         url = 'foo/convert' \
-              '?policy=eyJleHBpcnkiOjEzNDgwNjAxNjcsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXX0%3D' \
+              '?policy=eyJleHBpcnkiOjEzNDgwNjAxNjcsImNhbGwiOlsicmVhZCIsImNvbnZlcnQiXSwiaGFuZGxlIjoiZm9vIn0%3D' \
               '&quality=80' \
-              '&signature=4562a7e728aa0e53d82c20a97e4f01103dd127724edce631c3f4ada70922eecd'
+              '&signature=bccb3bdfc0cb1dfc7cff1bafebd659bb5a8f1a1a3a93e9d80a32b004cd4ab939'
         expect(filepicker_image_url('foo', quality: 80)).to eq(url)
       end
     end
